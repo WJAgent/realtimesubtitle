@@ -1,0 +1,21 @@
+{
+  "name": "realtimesubtitle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Live English <-> Chinese captions for a wedding (static web page, no build step).",
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint .",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "ci": "node scripts/ci.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0"
+  }
+}
