@@ -1,0 +1,73 @@
+/* The big screen. English is always the top line and Chinese the bottom line,
+   whoever is speaking, so each half of the room always knows where to look. */
+
+:root {
+  --bg: #1f1727;
+  --ink: #f5efe4;
+  --rose: #f4c6c9;
+  --size: 5; /* in vw, set from the operator console */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Newsreader', 'Noto Serif SC', 'Songti SC', 'SimSun', Georgia, serif;
+}
+
+:fullscreen { cursor: none; }
+
+#stage {
+  height: 100vh;
+  width: min(92vw, 1900px);
+  margin: 0 auto;
+  padding: 5vh 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5vh;
+}
+
+body[data-pos='top'] #stage { justify-content: flex-start; }
+body[data-pos='middle'] #stage { justify-content: center; }
+body[data-pos='bottom'] #stage { justify-content: flex-end; }
+
+.entry {
+  --k: 0.6;
+  opacity: 0.38;
+}
+.entry:last-child {
+  --k: 1;
+  opacity: 1;
+}
+
+.line {
+  margin: 0;
+  font-size: calc(var(--size) * var(--k) * 1vw);
+  line-height: 1.28;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.line.en { color: var(--ink); }
+.line.zh {
+  color: var(--rose);
+  margin-top: 0.3em;
+  font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', 'Newsreader', serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Words still being recognised are a little quieter until the sentence settles. */
+.entry.draft .line.src { opacity: 0.72; }
+.line.pending { opacity: 0.35; }
+
+.idle {
+  text-align: center;
+}
+.idle .line { --k: 1.5; }

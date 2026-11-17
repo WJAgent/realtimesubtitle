@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wedding captions: operator console</title>
+  <link rel="stylesheet" href="src/console.css">
+</head>
+<body>
+  <header class="bar">
+    <h1>Live captions</h1>
+    <p id="status" class="pill" role="status" data-kind="off">Mic off</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls" aria-labelledby="speakerHeading">
+      <h2 id="speakerHeading">Who is speaking?</h2>
+      <div class="seg" id="langSeg" role="group" aria-label="Speaker language">
+        <button type="button" data-lang="en" aria-pressed="true">English</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
+      <div class="row">
+        <button type="button" id="micBtn" class="primary">Start listening</button>
+        <button type="button" id="openBtn">Open display window</button>
+      </div>
+      <p id="trStatus" class="hint">Keys: E = English, C = 中文, M = start or stop.</p>
+      <p id="unsupported" class="warn" hidden>This browser can't do speech recognition. Use Google Chrome on a laptop.</p>
+    </section>
+
+    <section class="panel preview" aria-label="Display preview">
+      <iframe id="preview" src="display.html" title="Display preview"></iframe>
+      <p class="hint">What the room sees. Drag the display window to the projector, then press F or double-click it for fullscreen.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="phrasesHeading">
+      <h2 id="phrasesHeading">Quick phrases</h2>
+      <div id="phrases" class="phrases"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="manualHeading">
+      <h2 id="manualHeading">Type a line</h2>
+      <form id="manualForm" class="manual">
+        <select id="manLang" aria-label="Language of the line">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+        </select>
+        <textarea id="manSrc" rows="2" placeholder="Text to show" required></textarea>
+        <textarea id="manTgt" rows="2" placeholder="Translation (leave empty to translate automatically)"></textarea>
+        <button type="submit" class="primary">Show on screen</button>
+      </form>
+    </section>
+
+    <section class="panel wide" aria-labelledby="logHeading">
+      <div class="row spread">
+        <h2 id="logHeading">Transcript</h2>
+        <button type="button" id="downloadBtn">Download transcript</button>
+      </div>
+      <ol id="log" class="log"></ol>
+    </section>
+
+    <details class="panel wide settings">
+      <summary>Settings</summary>
+      <div class="fields">
+        <label>Translation
+          <select id="provider">
+            <option value="chrome">On-device (Chrome): free, works offline</option>
+            <option value="gemini">Gemini API: best quality, free key</option>
+            <option value="mymemory">MyMemory: free, no key, basic quality</option>
+          </select>
+        </label>
+        <label>Gemini API key
+          <input id="geminiKey" type="password" autocomplete="off" placeholder="Paste key from aistudio.google.com/apikey">
+        </label>
+        <label>Gemini model
+          <input id="geminiModel" type="text" autocomplete="off">
+        </label>
+        <label>Draft translations while speaking
+          <select id="drafts">
+            <option value="auto">Auto (on-device only)</option>
+            <option value="on">Always (uses more of a free quota)</option>
+            <option value="off">Never (translate finished sentences only)</option>
+          </select>
+        </label>
+        <label>Text size <output id="sizeOut"></output>
+          <input id="size" type="range" min="3" max="9" step="0.5">
+        </label>
+        <label>Lines on screen
+          <select id="lines">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+        <label>Vertical position
+          <select id="pos">
+            <option value="top">Top</option>
+            <option value="middle">Middle</option>
+            <option value="bottom">Bottom</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint">Settings and the API key are saved in this browser only. They are never sent to GitHub.</p>
+    </details>
+  </main>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
