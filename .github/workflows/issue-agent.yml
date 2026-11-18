@@ -1,0 +1,100 @@
+name: Issue agent pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: GitHub issue number
+        required: true
+        type: number
+
+permissions:
+  contents: read
+
+concurrency:
+  group: issue-agent-${{ inputs.issue }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.repository == 'jingx034/realtimesubtitle' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install 'playwright>=1.51,<2'
+          python -m playwright install --with-deps chromium
+      - name: Triage selected issue and prepare candidate
+        env:
+          ISSUE: ${{ inputs.issue }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          [[ "$ISSUE" =~ ^[1-9][0-9]*$ ]]
+          git branch -f main "$GITHUB_SHA"
+          python -m codeagent triage --refresh-issue "$ISSUE"
+          records=(artifacts/*/run.json)
+          [[ ${#records[@]} -eq 1 && -f "${records[0]}" ]]
+          echo "RECORD=${records[0]}" >> "$GITHUB_ENV"
+          python -m codeagent code "${records[0]}" "$ISSUE" --repo .
+      - name: Verify candidate and export commit
+        env:
+          ISSUE: ${{ inputs.issue }}
+        run: |
+          python -m codeagent verify "$RECORD" "$ISSUE"
+          mkdir -p transfer
+          run_id=$(basename "$(dirname "$RECORD")")
+          git -C "workspaces/$run_id/issue-$ISSUE" bundle create \
+            "$GITHUB_WORKSPACE/transfer/candidate.bundle" "refs/heads/agent/issue-$ISSUE" "^$GITHUB_SHA"
+          cp "$RECORD" transfer/run.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-report
+          path: artifacts/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-candidate
+          path: transfer/
+          if-no-files-found: error
+
+  publish:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-candidate
+          path: transfer
+      - name: Publish verified branch and draft PR
+        env:
+          ISSUE: ${{ inputs.issue }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -m codeagent publish transfer/run.json "$ISSUE" --repo . --bundle transfer/candidate.bundle
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: publication-report
+          path: |
+            transfer/run.json
+            transfer/dashboard.html
