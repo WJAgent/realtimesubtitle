@@ -16,6 +16,9 @@ export const PHRASES = [
   { en: 'I do', zh: '我愿意' },
   { en: 'Please enjoy the meal', zh: '请慢用' },
   { en: 'Thank you', zh: '谢谢大家' },
+  { en: "Please be seated", zh: "请大家入座" },
+  { en: "Let's take a group photo", zh: "我们来拍张大合照" },
+  { en: "The bride and groom will now cut the cake", zh: "现在请新人切蛋糕" },
 ];
 
 // Names and family terms. Only the Gemini provider can use these (it receives them as instructions).
