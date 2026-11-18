@@ -1,0 +1,103 @@
+{
+    "type":  "object",
+    "additionalProperties":  false,
+    "required":  [
+                     "type",
+                     "lane",
+                     "size",
+                     "verifiable",
+                     "risk_flags",
+                     "needs_human_input",
+                     "clarifying_questions",
+                     "reasoning",
+                     "acceptance_criteria",
+                     "verification_plan"
+                 ],
+    "properties":  {
+                       "type":  {
+                                    "type":  "string",
+                                    "enum":  [
+                                                 "bug",
+                                                 "feature",
+                                                 "data",
+                                                 "docs",
+                                                 "chore",
+                                                 "question",
+                                                 "invalid"
+                                             ]
+                                },
+                       "lane":  {
+                                    "type":  "string",
+                                    "enum":  [
+                                                 "auto",
+                                                 "assisted",
+                                                 "escalate",
+                                                 "ignore"
+                                             ]
+                                },
+                       "size":  {
+                                    "type":  "string",
+                                    "enum":  [
+                                                 "xs",
+                                                 "s",
+                                                 "m",
+                                                 "l"
+                                             ]
+                                },
+                       "verifiable":  {
+                                          "type":  "string",
+                                          "enum":  [
+                                                       "yes",
+                                                       "partly",
+                                                       "no"
+                                                   ]
+                                      },
+                       "risk_flags":  {
+                                          "type":  "array",
+                                          "items":  {
+                                                        "type":  "string",
+                                                        "enum":  [
+                                                                     "hidden_instructions",
+                                                                     "weakens_safeguard",
+                                                                     "touches_protected_paths",
+                                                                     "credential_handling",
+                                                                     "credential_exposure",
+                                                                     "security_sensitive",
+                                                                     "requires_audio_or_device",
+                                                                     "ui_change_untested",
+                                                                     "ambiguous_requirements",
+                                                                     "multiple_requests",
+                                                                     "paid_service_default",
+                                                                     "real_latency_measurement"
+                                                                 ]
+                                                    }
+                                      },
+                       "needs_human_input":  {
+                                                 "type":  "array",
+                                                 "items":  {
+                                                               "type":  "string"
+                                                           }
+                                             },
+                       "clarifying_questions":  {
+                                                    "type":  "array",
+                                                    "items":  {
+                                                                  "type":  "string"
+                                                              }
+                                                },
+                       "reasoning":  {
+                                         "type":  "string"
+                                     },
+                       "acceptance_criteria":  {
+                                                   "items":  {
+                                                                 "type":  "string"
+                                                             },
+                                                   "type":  "array"
+                                               },
+                       "verification_plan":  {
+                                                 "items":  {
+                                                               "type":  "string"
+                                                           },
+                                                 "type":  "array"
+                                             }
+                   }
+}
