@@ -215,7 +215,7 @@ function pushShown(e) {
   renderLog();
 }
 
-for (const p of PHRASES) {
+for (const p of PHRASES.filter((phrase) => !['Cheers!', 'Good evening everyone'].includes(phrase.en))) {
   const b = document.createElement('button');
   b.type = 'button';
   b.append(p.en);
